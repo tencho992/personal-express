@@ -11,7 +11,7 @@ submitAnswerButton.forEach(function(element) {
           // Perform further actions with the updated answer value
       
           // Fetch request or other operations
-          fetch('messages', {
+          fetch('messages/submit', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({

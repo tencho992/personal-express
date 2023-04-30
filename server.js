@@ -26,7 +26,7 @@ app.use(express.static('public'))
 app.get('/', (req, res) => {
   db.collection('hatenotes').find().toArray((err, result) => {
     if (err) return console.log(err)
-    res.render('index.ejs', {
+     res.render('index.ejs', {
       ansr : req.body.ansr,
       hatenotes: result
     })
@@ -34,14 +34,15 @@ app.get('/', (req, res) => {
 })
 
 app.post('/messages', (req, res) => {
-  db.collection('hatenotes').insertOne({name: req.body.name, msg: req.body.question, ansr: req.body.ansr}, (err, result) => {
+  db.collection('hatenotes').insertOne({name: req.body.name, msg: req.body.question, ansr: ''}, (err, result) => {
     if (err) return console.log(err)
     console.log('saved to database')
     res.redirect('/')
   })
 })
 
-app.put('/messages', (req, res) => {
+app.put('/messages/submit', (req, res) => {
+
   const answer = req.body.ansr;
   db.collection('hatenotes')
   .findOneAndUpdate({name: req.body.name, msg: req.body.question}, {
