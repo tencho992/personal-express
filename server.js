@@ -25,42 +25,47 @@ app.use(express.static('public'))
 
 app.get('/', (req, res) => {
   db.collection('hatenotes').find().toArray((err, result) => {
-    if (err) return console.log(err)
-     res.render('index.ejs', {
-      ansr : req.body.ansr,
+    if (err) return console.log(err);
+
+    const answeredNotes = result.filter(item => item.ansr);
+
+    res.render('index.ejs', {
+      answeredNotes: answeredNotes,
       hatenotes: result
-    })
-  })
-})
+    });
+  });
+});
+
 
 app.post('/messages', (req, res) => {
-  db.collection('hatenotes').insertOne({name: req.body.name, msg: req.body.question, ansr: ''}, (err, result) => {
+  db.collection('hatenotes').insertOne({name: req.body.name, msg: req.body.question, ansr: ""}, (err, result) => {
     if (err) return console.log(err)
     console.log('saved to database')
     res.redirect('/')
   })
 })
 
-app.put('/messages/submit', (req, res) => {
+// ...
 
-  const answer = req.body.ansr;
-  db.collection('hatenotes')
-  .findOneAndUpdate({name: req.body.name, msg: req.body.question}, {
-    $set: {
-      ansr: answer
+app.put('/messages/answer', (req, res) => {
+  const name = req.body.name;
+  const msg = req.body.msg;
+  const ansr = req.body.ansr;
+
+  db.collection('hatenotes').findOneAndUpdate(
+    { name: name, msg: msg },
+    { $set: { ansr: ansr } },
+    { returnOriginal: false },
+    (err, result) => {
+      if (err) return res.send(err);
+      res.send(result.value);
     }
-  }, {
-    sort: {_id: -1},
-    upsert: true
-  }, (err, result) => {
-    if (err) return res.send(err)
-    res.send(result)
-  })
+  );
+});
 
-})
 
 app.delete('/messages', (req, res) => {
-  db.collection('hatenotes').findOneAndDelete({name: req.body.name, msg: req.body.question}, (err, result) => {
+  db.collection('hatenotes').findOneAndDelete({name: req.body.name, msg: req.body.question, ansr: ''}, (err, result) => {
     if (err) return res.send(500, err)
     res.send('Message deleted!')
   })

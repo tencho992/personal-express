@@ -24,22 +24,22 @@
 
   <h3>Questions to answer:</h3>
   <ul class="messages">
-  <% for(var i=0; i<hatenotes.length; i++) {%>
-    <li class="message">
-      <span><%= hatenotes[i].name %></span>
-      <span><%= hatenotes[i].msg %></span>
-      <textarea id="answer" rows="6" cols="30" placeholder="Type Answer Here..." name="answer" value="<%= ansr %>"></textarea>
-      <p><button id="submitAnswer" type="submit">Submit</button></p>
-      <span>
-        <%= hatenotes[i].ansr %>
-      </span>
-      
-      <span><i class="fa fa-trash" aria-hidden="true"></i></span>
-    </li>
-  <% } %>
+    <% for (var i = 0; i < hatenotes.length; i++) { %>
+      <li class="message">
+        <span><%= hatenotes[i].name %></span>
+        <span><%= hatenotes[i].msg %></span>
+        <% if (!hatenotes[i].ansr) { %>
+          <textarea id="answer" rows="6" cols="30" placeholder="Type Answer Here..." name="answer"></textarea>
+          <p><button class="submitAnswer" type="button">Submit</button></p>
+        <% } else { %>
+          <span><%= hatenotes[i].ansr %></span>
+        <% } %>
+        <span><i class="fa fa-trash" aria-hidden="true"></i></span>
+      </li>
+    <% } %>
   </ul>
-
   
+
 
   <script src="main.js"></script>
 
