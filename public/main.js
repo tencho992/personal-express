@@ -14,8 +14,9 @@ submitAnswerButton.forEach(function (element) {
       body: JSON.stringify({
         name: name,
         msg: msg,
+        ansr: answer,
+        id: this.dataset.id
         
-        ansr: answer
       })
     })
       .then(response => {
@@ -30,17 +31,14 @@ submitAnswerButton.forEach(function (element) {
 
 Array.from(trash).forEach(function (element) {
   element.addEventListener('click', function () {
-    const name = this.parentNode.parentNode.querySelector('span:nth-child(1)').innerText;
-    const msg = this.parentNode.parentNode.querySelector('span:nth-child(2)').innerText;
-
-    fetch('/messages', {
+  
+     fetch('/messages/answer', {
       method: 'delete',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: name,
-        msg: msg
+        id: this.dataset.id
       })
     })
       .then(function (response) {

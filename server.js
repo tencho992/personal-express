@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-const MongoClient = require('mongodb').MongoClient
+const {MongoClient, ObjectId} = require('mongodb')
 
 var db, collection;
 
@@ -45,15 +45,11 @@ app.post('/messages', (req, res) => {
   })
 })
 
-// ...
-
 app.put('/messages/answer', (req, res) => {
-  const name = req.body.name;
-  const msg = req.body.msg;
-  const ansr = req.body.ansr;
-
+  
+  const {id} = req.body
   db.collection('hatenotes').findOneAndUpdate(
-    { name: name, msg: msg },
+    {  "id": ObjectId(id)},
     { $set: { ansr: ansr } },
     { returnOriginal: false },
     (err, result) => {
@@ -64,8 +60,9 @@ app.put('/messages/answer', (req, res) => {
 });
 
 
-app.delete('/messages', (req, res) => {
-  db.collection('hatenotes').findOneAndDelete({name: req.body.name, msg: req.body.question, ansr: ''}, (err, result) => {
+app.delete('/messages/answer', (req, res) => {
+  const {id}= req.body
+  db.collection('hatenotes').findOneAndDelete({_id: ObjectId(id)}, (err, result) => {
     if (err) return res.send(500, err)
     res.send('Message deleted!')
   })
